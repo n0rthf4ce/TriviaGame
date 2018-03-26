@@ -79,7 +79,11 @@ var quizQuestions = [
         d: "The Gryffindor Common Room",
         answer: "a"
     },
-], ticking = new Audio("assets/sounds/ticking.wav"), timeup = new Audio("assets/sounds/timeup.wav"), correct = new Audio("assets/sounds/correct.mp3"), incorrect = new Audio("assets/sounds/wrong.mp3"), index = 0, time = 14, quizFinished = false, resultTime, intervalID, right = 0, wrong = 0, timeout = 0;
+], ticking = new Audio("assets/sounds/ticking.wav"),
+    timeup = new Audio("assets/sounds/timeup.wav"),
+    correct = new Audio("assets/sounds/correct.mp3"),
+    incorrect = new Audio("assets/sounds/wrong.mp3"),
+    sound = true, index = 0, time = 14, quizFinished = false, resultTime, intervalID, right = 0, wrong = 0, timeout = 0;
 
 function createButton(dataAnswer, text) {
     var newButton = $("<button>");
@@ -141,11 +145,11 @@ function countdown() {
             break;
         case 3: $("#countdown").removeClass();
             $("#countdown").addClass("text-danger");
-            ticking.play();
+            if (sound) { ticking.play(); }
             break;
         case 0: clearInterval(intervalID);
             $("#results").text("You ran out of time! Try to think faster...");
-            timeup.play();
+            if (sound) { timeup.play(); }
             showResults();
             timeout++;
             resultTime = setTimeout(reset, 3500);
@@ -153,7 +157,15 @@ function countdown() {
     }
     time--;
 }
-
+$("#sound").on("click", function () {
+    if (sound) {
+        $(this).html('<i class="fas fa-volume-off"></i>');
+        sound = false;
+    } else {
+        $(this).html('<i class="fas fa-volume-up"></i>');
+        sound = true;
+    }
+});
 $("#restart").hide();
 $("#whole-countdown").hide();
 $("#start").on("click", "button", function () {
@@ -167,13 +179,13 @@ $("#answers").on("click", ".answer", function () {
     var answerString;
     clearInterval(intervalID);
     if (userAnswer == quizQuestions[index].answer) {
-        correct.play();
+        if (sound) { correct.play(); }
         $("#results").text("That's correct!");
         right++;
         showResults();
         resultTime = setTimeout(reset, 2000);
     } else {
-        incorrect.play();
+        if (sound) { incorrect.play(); }
         switch (quizQuestions[index].answer) {
             case "a": answerString = quizQuestions[index].a; break;
             case "b": answerString = quizQuestions[index].b; break;
